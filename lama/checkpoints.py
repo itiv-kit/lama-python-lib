@@ -25,7 +25,7 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
 
     def check_buildins(in_data, golden) -> bool:
         if in_data != golden:
-            raise AssertionError(f"Your data does not equal the reference file. Received (type: {type(in_data)}) {in_data}, should be (type: {type(golden)}) {golden}")
+            raise UserWarning(f"Your data does not equal the reference file. Received (type: {type(in_data)}) {in_data}, should be (type: {type(golden)}) {golden}")
         return in_data == golden
 
     def check_lists(in_data, golden) -> bool:
@@ -34,7 +34,7 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
         else:
             # check lengths
             if len(in_data) != len(golden):
-                raise AssertionError(f"Your list has an indifferent amount of elements. Yours: {len(in_data)}, should be {len(golden)}")
+                raise UserWarning(f"Your list has an indifferent amount of elements. Yours: {len(in_data)}, should be {len(golden)}")
             else:
                 # Look for wrong items
                 wrong_items = [(i, a, b) for i, (a, b) in enumerate(zip(in_data, golden)) if a != b]
@@ -44,7 +44,7 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
                     error_message += f"\t Index {i}: Has {a}, expected {b}\n"
                 if len(wrong_items) > 10:
                     error_message += "\t ... more wrong items ..."
-                raise AssertionError(error_message)
+                raise UserWarning(error_message)
 
     def check_ndarray(in_data, golden) -> bool:
         np.testing.assert_array_equal(in_data, golden)

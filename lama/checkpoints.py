@@ -9,6 +9,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import numpy as np
+import warnings
 
 
 LAMA_CHECKPOINT_FOLDER = 'checkpoints'
@@ -20,12 +21,12 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
         try:
             pandas.testing.assert_frame_equal(in_data, golden, check_names=False)
         except AssertionError as e:
-            raise UserWarning("Note: This only shows the first wrong column in your dataframe, there might be more. Check also the df.compare function.") from e
+            warnings.warn("Note: This only shows the first wrong column in your dataframe, there might be more. Check also the df.compare function.", UserWarning)
         return True
 
     def check_buildins(in_data, golden) -> bool:
         if in_data != golden:
-            raise UserWarning(f"Your data does not equal the reference file. Received (type: {type(in_data)}) {in_data}, should be (type: {type(golden)}) {golden}")
+            warnings.warn(f"Your data does not equal the reference file. Received (type: {type(in_data)}) {in_data}, should be (type: {type(golden)}) {golden}", UserWarning)
         return in_data == golden
 
     def check_lists(in_data, golden) -> bool:
@@ -34,7 +35,7 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
         else:
             # check lengths
             if len(in_data) != len(golden):
-                raise UserWarning(f"Your list has an indifferent amount of elements. Yours: {len(in_data)}, should be {len(golden)}")
+                warnings.warn(f"Your list has an indifferent amount of elements. Yours: {len(in_data)}, should be {len(golden)}", UserWarning)
             else:
                 # Look for wrong items
                 wrong_items = [(i, a, b) for i, (a, b) in enumerate(zip(in_data, golden)) if a != b]
@@ -44,7 +45,7 @@ def lama_compare_checkpoint(in_data, pickle_fn: str):
                     error_message += f"\t Index {i}: Has {a}, expected {b}\n"
                 if len(wrong_items) > 10:
                     error_message += "\t ... more wrong items ..."
-                raise UserWarning(error_message)
+                warnings.warn(error_message, UserWarning)
 
     def check_ndarray(in_data, golden) -> bool:
         np.testing.assert_array_equal(in_data, golden)

@@ -15,7 +15,7 @@ class SupervisedLearning_Tests(TestCase):
 
     def test_train_age_bins(self, train):
         expected_val = {0: 78, 1: 433, 2: 210, 3: 106, 4: 42, 5: 22}
-        self.assertTrue(train["Age_bin"].dtype == 'int32', msg=ERR_MSG)
+        self.assertTrue(train["Age_bin"].dtype == 'int64', msg=ERR_MSG)
         self.assertEqual(len(set(train["Age_bin"])), 6, msg=ERR_MSG)
         self.assertDictEqual(train['Age_bin'].value_counts().to_dict(), expected_val, msg=ERR_MSG)
         print(OK_MSG)
